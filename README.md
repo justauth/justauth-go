@@ -1,35 +1,33 @@
 # justauth-go
-Go 版 JustAuth
+Go version of JustAuth
 
-# 期待你的加入
+## Join Us
 
-JustAuth 到如今以获得关注：![](https://img.shields.io/github/stars/zhangyd-c/JustAuth.svg?style=social) ![](https://gitee.com/yadong.zhang/JustAuth/badge/star.svg?theme=gvp)，JustAuth 能取到如此成绩离不开社区小伙伴的努力和广大技术圈朋友的支持，时至今日，JustAuth 已渐趋完善，但仍有很大的提升空间。
+JustAuth has received widespread attention: ![](https://img.shields.io/github/stars/zhangyd-c/JustAuth.svg?style=social) ![](https://gitee.com/yadong.zhang/JustAuth/badge/star.svg?theme=gvp)，JustAuth can't becomes so popular without the great effort of community members'. As time goes by, JustAuth has a lot of features now and still keep improving.
 
-如果你对 JustAuth 感兴趣，如果你对开源比较感兴趣，那么我们期待你的参与。
+If you are interested in **`JustAuth`**, if you are interested in the open source community, we look forward to your participation.
 
+## Contributing Steps
 
-# 参与步骤
+- fork this repo
+- clone the your forked repo to your local
+- make changes on the `dev` branch
+- commit & push to your forked repo
+- create PR（pull request）to the upstream
+- wait for the code review and approval
 
-- fork 本项目到自己的 repo 。注意：一定要先 fork 到自己的仓库哦
-- 把 fork 过去的项目也就是你仓库中的项目 clone 到你本地
-- 修改代码（ `dev` 分支）
-- commit & push 到自己的仓库
-- 发起 PR（pull request） 请求，提交到本项目的 dev 分支
-- 等待管理员合并
+Sincerely look forward to your joining, **it is a kind of happiness to do something with people sharing the same value!**
 
+## Overview
 
-真诚的期待你的加入，**和一群志同道合的朋友一起做一件喜欢的事情是一种幸福！**
+* Stable versions
 
-# JustAuth 项目一览
-
-## 已完成
-
- [Java 版](https://github.com/justauth/JustAuth)（已完成）
- [.Net 版](https://github.com/justauth/CollectiveOAuth)（已完成）
+ 1. [Java](https://github.com/justauth/JustAuth) (Stable)
+ 2. [.Net](https://github.com/justauth/CollectiveOAuth) (Stable)
  
-## 未开始
+* Need help
 
- [Python 版](https://github.com/justauth/justauth-python)（未开始）
- [Go 版](https://github.com/justauth/justauth-go)（未开始）
- [Node 版](https://github.com/justauth/justauth-node)（未开始）
- [PHP 版](https://github.com/justauth/justauth-php)（未开始）
+ 1. [Go](https://github.com/justauth/justauth-go) (Developing)
+ 2. [Python](https://github.com/justauth/justauth-python) (TODO)
+ 3. [Node](https://github.com/justauth/justauth-node) (TODO)
+ 4. [PHP](https://github.com/justauth/justauth-php) (TODO)
