@@ -4,7 +4,10 @@
 *.dll
 *.so
 *.dylib
-
+vcs.xml
+modules.xml
+justauth-go.iml
+.gitignore
 # Test binary, built with `go test -c`
 *.test
 
