@@ -1,9 +1,23 @@
 package request
 
-import "fmt"
+import (
+	"github.com/justauth/justauth-go/model"
+)
 
 type AuthDefaultRequest struct{}
 
-func (a *AuthDefaultRequest) Play(authRequest AuthRequest) {
-	fmt.Printf(fmt.Sprintf("%s is awesome!", authRequest.Authorize()))
+func (d *AuthDefaultRequest) Authorize(state string) string {
+	return "Authorize"
+}
+
+func (d *AuthDefaultRequest) Login(authCallBack model.AuthCallback) model.AuthResponse {
+	return model.AuthResponse{}
+}
+
+func (d *AuthDefaultRequest) Revoke(authToken model.AuthToken) model.AuthResponse {
+	return model.AuthResponse{}
+}
+
+func (d *AuthDefaultRequest) Refresh(authToken model.AuthToken) model.AuthResponse {
+	return model.AuthResponse{}
 }

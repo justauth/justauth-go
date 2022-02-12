@@ -1,6 +1,7 @@
 package justauth
 
 import (
+	"fmt"
 	"github.com/justauth/justauth-go/request"
 	"testing"
 )
@@ -11,7 +12,13 @@ func TestHello(t *testing.T) {
 
 	assert.Equal(t, want, Hello())
 
-	authWxRequest := &request.AuthWxRequest{}
+	a := request.AuthDefaultRequest{}
 
-	authWxRequest.Play(authWxRequest)
+	b := request.AuthWxRequest{}
+
+	r1 := a.Authorize("")
+	r2 := b.Authorize("")
+
+	fmt.Println(r1)
+	fmt.Println(r2)
 }
