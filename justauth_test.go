@@ -38,5 +38,6 @@ func TestHello(t *testing.T) {
 		return
 	}
 	fmt.Println(response.Data)
+	fmt.Println("test")
 
 }
