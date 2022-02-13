@@ -1,7 +1,7 @@
 package request
 
 type AuthWxRequest struct {
-	AuthDefaultRequest
+	BaseAuthRequest
 }
 
 func (d *AuthWxRequest) Authorize(state string) string {
