@@ -28,6 +28,14 @@ const (
 	PlatformStrWechatMp PlatformStr = "wechat_mp"
 )
 
+type UserGender string
+
+const (
+	UserGenderMan     UserGender = "男"
+	UserGenderWoman   UserGender = "女"
+	UserGenderUnknown UserGender = "未知"
+)
+
 func InitConfig() error {
 	fileContent, err := ioutil.ReadFile("config/request_url.yaml")
 	if err != nil {

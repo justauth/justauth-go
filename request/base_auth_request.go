@@ -22,7 +22,10 @@ func (baseAuthRequest *BaseAuthRequest) Login(request AuthRequest, authCallBack 
 	if err != nil {
 		return model.AuthResponse{}, err
 	}
-	userInfo := request.getUserInfo(authToken)
+	userInfo, err := request.getUserInfo(authToken)
+	if err != nil {
+		return model.AuthResponse{}, err
+	}
 	return model.AuthResponse{
 		Code: 200,
 		Msg:  "",
@@ -59,7 +62,26 @@ func (baseAuthRequest *BaseAuthRequest) DoPostAuthorizationCode(code string) (st
 	return string(body), nil
 }
 
+func (baseAuthRequest *BaseAuthRequest) DoGetUserInfo(authToken model.AuthToken) (string, error) {
+	url := baseAuthRequest.getUserInfoUrl(authToken)
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
+}
+
 func (baseAuthRequest *BaseAuthRequest) getAccessTokenUrl(code string) string {
 	return fmt.Sprintf("%s?code=%s&client_id=%s&client_secret=%s&grant_type=authorization_code&redirect_uri=%s",
 		baseAuthRequest.platformUrl.AccessTokenUrl, code, baseAuthRequest.authConfig.ClientId, baseAuthRequest.authConfig.ClientSecret, baseAuthRequest.authConfig.RedirectUri)
+}
+
+func (baseAuthRequest *BaseAuthRequest) getUserInfoUrl(authToken model.AuthToken) string {
+	return fmt.Sprintf("%s?access_token=%s",
+		baseAuthRequest.platformUrl.UserInfoUrl, authToken.AccessToken)
 }

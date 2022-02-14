@@ -8,5 +8,5 @@ type AuthRequest interface {
 	Revoke(authToken model.AuthToken) model.AuthResponse
 	Refresh(authToken model.AuthToken) model.AuthResponse
 	getAccessToken(authCallback model.AuthCallback) (model.AuthToken, error)
-	getUserInfo(authToken model.AuthToken) model.AuthUser
+	getUserInfo(authToken model.AuthToken) (model.AuthUser, error)
 }

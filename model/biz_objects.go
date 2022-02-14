@@ -17,13 +17,15 @@ type AuthResponse struct {
 
 type AuthToken struct {
 	AccessToken          string `json:"accessToken"`
-	ExpireIn             int    `json:"expireIn"`
+	ExpireIn             int64  `json:"expireIn"`
 	RefreshToken         string `json:"refreshToken"`
 	RefreshTokenExpireIn int    `json:"refreshTokenExpireIn"`
 	Uid                  string `json:"uid"`
 	OpenId               string `json:"openId"`
 	AccessCode           string `json:"accessCode"`
 	UnionId              string `json:"unionId"`
+	Scope                string `json:"scope"`
+	TokenType            string `json:"tokenType"`
 }
 
 type AuthConfig struct {
