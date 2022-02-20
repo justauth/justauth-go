@@ -2,8 +2,9 @@ package request
 
 import (
 	"errors"
-	"fmt"
+	"github.com/justauth/justauth-go/cache"
 	"github.com/justauth/justauth-go/config"
+	"github.com/justauth/justauth-go/error"
 	"github.com/justauth/justauth-go/model"
 	"github.com/tidwall/gjson"
 )
@@ -13,19 +14,19 @@ type AuthGiteeRequest struct {
 	authConfig      model.AuthConfig
 }
 
-func NewAuthGiteeRequest(authConfig model.AuthConfig) (*AuthGiteeRequest, error) {
+func NewAuthGiteeRequest(authConfig model.AuthConfig, authStateCache cache.AuthStateCache) (*AuthGiteeRequest, error) {
 	err := config.InitConfig()
 	if err != nil {
 		return nil, err
 	}
 	isHaveConfig, platformUrl := config.GetRequestUrlListConfig().GetUrlByPlatform(config.PlatformStrGitee)
 	if !isHaveConfig {
-		return nil, errors.New(fmt.Sprintf("%s not have config", "NewAuthGiteeRequest"))
+		return nil, selferror.NotHaveConfigError
 	}
 	return &AuthGiteeRequest{
 		baseAuthRequest: BaseAuthRequest{
-			authConfig:  authConfig,
-			platformUrl: platformUrl,
+			AuthConfig:  authConfig,
+			PlatformUrl: platformUrl,
 		},
 	}, nil
 }

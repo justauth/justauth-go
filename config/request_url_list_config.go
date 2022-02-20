@@ -26,6 +26,9 @@ type PlatformStr string
 const (
 	PlatformStrGitee    PlatformStr = "gitee"
 	PlatformStrWechatMp PlatformStr = "wechat_mp"
+	PlatformStrTwitter  PlatformStr = "twitter"
+	PlatformStrAliPay   PlatformStr = "alipay"
+	PlatformStrHuaWei   PlatformStr = "huawei"
 )
 
 type UserGender string

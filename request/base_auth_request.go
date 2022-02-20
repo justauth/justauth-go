@@ -2,15 +2,19 @@ package request
 
 import (
 	"fmt"
+	"github.com/justauth/justauth-go/cache"
 	"github.com/justauth/justauth-go/config"
+	"github.com/justauth/justauth-go/error"
 	"github.com/justauth/justauth-go/model"
+	"github.com/justauth/justauth-go/utils"
 	"io/ioutil"
 	"net/http"
 )
 
 type BaseAuthRequest struct {
-	authConfig  model.AuthConfig
-	platformUrl config.PlatformUrl
+	AuthConfig  model.AuthConfig
+	PlatformUrl config.PlatformUrl
+	StateCache  cache.AuthStateCache
 }
 
 func (baseAuthRequest *BaseAuthRequest) Authorize(state string) string {
@@ -18,6 +22,19 @@ func (baseAuthRequest *BaseAuthRequest) Authorize(state string) string {
 }
 
 func (baseAuthRequest *BaseAuthRequest) Login(request AuthRequest, authCallBack model.AuthCallback) (model.AuthResponse, error) {
+
+	checkCodeResult := utils.CheckCode(baseAuthRequest.PlatformUrl, authCallBack)
+	if !checkCodeResult {
+		return model.AuthResponse{}, selferror.IllegalCodeError
+	}
+
+	if !baseAuthRequest.AuthConfig.IgnoreCheckRedirectUri {
+		isStateEqual := utils.CheckState(authCallBack.State, baseAuthRequest.PlatformUrl, baseAuthRequest.StateCache)
+		if !isStateEqual {
+			return model.AuthResponse{}, selferror.IllegalStateError
+		}
+	}
+
 	authToken, err := request.getAccessToken(authCallBack)
 	if err != nil {
 		return model.AuthResponse{}, err
@@ -78,10 +95,10 @@ func (baseAuthRequest *BaseAuthRequest) DoGetUserInfo(authToken model.AuthToken)
 
 func (baseAuthRequest *BaseAuthRequest) getAccessTokenUrl(code string) string {
 	return fmt.Sprintf("%s?code=%s&client_id=%s&client_secret=%s&grant_type=authorization_code&redirect_uri=%s",
-		baseAuthRequest.platformUrl.AccessTokenUrl, code, baseAuthRequest.authConfig.ClientId, baseAuthRequest.authConfig.ClientSecret, baseAuthRequest.authConfig.RedirectUri)
+		baseAuthRequest.PlatformUrl.AccessTokenUrl, code, baseAuthRequest.AuthConfig.ClientId, baseAuthRequest.AuthConfig.ClientSecret, baseAuthRequest.AuthConfig.RedirectUri)
 }
 
 func (baseAuthRequest *BaseAuthRequest) getUserInfoUrl(authToken model.AuthToken) string {
 	return fmt.Sprintf("%s?access_token=%s",
-		baseAuthRequest.platformUrl.UserInfoUrl, authToken.AccessToken)
+		baseAuthRequest.PlatformUrl.UserInfoUrl, authToken.AccessToken)
 }

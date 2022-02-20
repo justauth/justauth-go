@@ -3,7 +3,7 @@ package model
 type AuthCallback struct {
 	Code              string `json:"code"`
 	AuthCode          string `json:"auth_code"`
-	State             string `json:"state"`
+	State             string `json:"cache"`
 	AuthorizationCode string `json:"authorization_code"`
 	OauthToken        string `json:"oauth_token"`
 	OauthVerifier     string `json:"oauth_verifier"`
