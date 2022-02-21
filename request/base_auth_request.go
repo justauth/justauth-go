@@ -9,16 +9,14 @@ import (
 	"github.com/justauth/justauth-go/utils"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 type BaseAuthRequest struct {
 	AuthConfig  model.AuthConfig
 	PlatformUrl config.PlatformUrl
 	StateCache  cache.AuthStateCache
-}
-
-func (baseAuthRequest *BaseAuthRequest) Authorize(state string) string {
-	return fmt.Sprintf("%s")
 }
 
 func (baseAuthRequest *BaseAuthRequest) Login(request AuthRequest, authCallBack model.AuthCallback) (model.AuthResponse, error) {
@@ -101,4 +99,28 @@ func (baseAuthRequest *BaseAuthRequest) getAccessTokenUrl(code string) string {
 func (baseAuthRequest *BaseAuthRequest) getUserInfoUrl(authToken model.AuthToken) string {
 	return fmt.Sprintf("%s?access_token=%s",
 		baseAuthRequest.PlatformUrl.UserInfoUrl, authToken.AccessToken)
+}
+
+func (baseAuthRequest *BaseAuthRequest) getAuthorizeUrl(state string) string {
+	return fmt.Sprintf("%s?response_type=code&client_id=%s&redirect_uri=%s&state=%s",
+		baseAuthRequest.PlatformUrl.AuthorizeUrl, baseAuthRequest.AuthConfig.ClientId, baseAuthRequest.AuthConfig.RedirectUri, state)
+}
+
+func (baseAuthRequest *BaseAuthRequest) getScopes(separator string, isEncode bool, defaultScopes []string) string {
+	configScopes := baseAuthRequest.AuthConfig.Scopes
+	if len(configScopes) == 0 {
+		if len(defaultScopes) == 0 {
+			return ""
+		}
+		configScopes = defaultScopes
+	}
+	if separator == "" {
+		separator = " "
+	}
+	scopeStr := strings.Join(configScopes, separator)
+
+	if isEncode {
+		return url.QueryEscape(scopeStr)
+	}
+	return scopeStr
 }

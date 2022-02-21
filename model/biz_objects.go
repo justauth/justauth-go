@@ -29,22 +29,22 @@ type AuthToken struct {
 }
 
 type AuthConfig struct {
-	ClientId               string `json:"clientId"`
-	ClientSecret           string `json:"client_secret"`
-	RedirectUri            string `json:"redirect_uri"`
-	AlipayPublicKey        string `json:"alipay_public_key"`
-	UnionId                bool   `json:"union_id"`
-	StackOverflowKey       string `json:"stackoverflow_key"`
-	AgentId                string `json:"agent_id"`
-	DomainPrefix           string `json:"domain_prefix"`
-	IgnoreCheckState       bool   `json:"ignore_check_state"`
-	Scopes                 string `json:"scopes"`
-	DeviceId               string `json:"device_id"`
-	ClientOsType           int    `json:"client_os_type"`
-	PackId                 string `json:"pack_id"`
-	Pkce                   bool   `json:"pkce"`
-	AuthServerId           string `json:"auth_server_id"`
-	IgnoreCheckRedirectUri bool   `json:"ignore_check_redirect_uri"`
+	ClientId               string   `json:"clientId"`
+	ClientSecret           string   `json:"client_secret"`
+	RedirectUri            string   `json:"redirect_uri"`
+	AlipayPublicKey        string   `json:"alipay_public_key"`
+	UnionId                bool     `json:"union_id"`
+	StackOverflowKey       string   `json:"stackoverflow_key"`
+	AgentId                string   `json:"agent_id"`
+	DomainPrefix           string   `json:"domain_prefix"`
+	IgnoreCheckState       bool     `json:"ignore_check_state"`
+	Scopes                 []string `json:"scopes"`
+	DeviceId               string   `json:"device_id"`
+	ClientOsType           int      `json:"client_os_type"`
+	PackId                 string   `json:"pack_id"`
+	Pkce                   bool     `json:"pkce"`
+	AuthServerId           string   `json:"auth_server_id"`
+	IgnoreCheckRedirectUri bool     `json:"ignore_check_redirect_uri"`
 }
 
 type AuthUser struct {

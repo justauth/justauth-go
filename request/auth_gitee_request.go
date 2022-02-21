@@ -2,6 +2,7 @@ package request
 
 import (
 	"errors"
+	"fmt"
 	"github.com/justauth/justauth-go/cache"
 	"github.com/justauth/justauth-go/config"
 	"github.com/justauth/justauth-go/error"
@@ -14,7 +15,29 @@ type AuthGiteeRequest struct {
 	authConfig      model.AuthConfig
 }
 
-func NewAuthGiteeRequest(authConfig model.AuthConfig, authStateCache cache.AuthStateCache) (*AuthGiteeRequest, error) {
+type GiteeScope string
+
+const (
+	GiteeScopeUserInfo     = "user_info"
+	GiteeScopeProjects     = "projects"
+	GiteeScopePullRequests = "pull_requests"
+	GiteeScopeIssues       = "issues"
+	GiteeScopeNotes        = "notes"
+	GiteeScopeKeys         = "keys"
+	GiteeScopeHook         = "hook"
+	GiteeScopeGroups       = "groups"
+	GiteeScopeGists        = "gists"
+	GiteeScopeEnterprises  = "enterprises"
+	GiteeScopeEmails       = "emails"
+)
+
+var defaultScope = []string{GiteeScopeUserInfo}
+
+func NewAuthGiteeRequest(authConfig model.AuthConfig, authStateCache ...cache.AuthStateCache) (*AuthGiteeRequest, error) {
+	stateCache := authStateCache[0]
+	if stateCache == nil {
+		stateCache = cache.NewAuthDefaultStateCache()
+	}
 	err := config.InitConfig()
 	if err != nil {
 		return nil, err
@@ -27,12 +50,15 @@ func NewAuthGiteeRequest(authConfig model.AuthConfig, authStateCache cache.AuthS
 		baseAuthRequest: BaseAuthRequest{
 			AuthConfig:  authConfig,
 			PlatformUrl: platformUrl,
+			StateCache:  stateCache,
 		},
 	}, nil
 }
 
 func (giteeRequest *AuthGiteeRequest) Authorize(state string) string {
-	return "AuthWxRequest-Authorize"
+	authorizeUrl := giteeRequest.baseAuthRequest.getAuthorizeUrl(state)
+	scopes := giteeRequest.baseAuthRequest.getScopes(" ", true, defaultScope)
+	return fmt.Sprintf("%s?scope=%s", authorizeUrl, scopes)
 }
 
 func (giteeRequest *AuthGiteeRequest) Login(authCallBack model.AuthCallback) (model.AuthResponse, error) {
