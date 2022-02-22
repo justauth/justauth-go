@@ -2,6 +2,7 @@ package request
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/justauth/justauth-go/cache"
 	"github.com/justauth/justauth-go/config"
 	"github.com/justauth/justauth-go/error"
@@ -77,6 +78,33 @@ func (baseAuthRequest *BaseAuthRequest) DoPostAuthorizationCode(code string) (st
 	return string(body), nil
 }
 
+func (baseAuthRequest *BaseAuthRequest) DoGetAuthorizationCode(code string) (string, error) {
+	resp, err := http.Get(baseAuthRequest.getAccessTokenUrl(code))
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
+}
+
+func (baseAuthRequest *BaseAuthRequest) DoPostUserInfo(authToken model.AuthToken) (string, error) {
+	url := baseAuthRequest.getUserInfoUrl(authToken)
+	resp, err := http.Post(url, "application/json", nil)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
+}
+
 func (baseAuthRequest *BaseAuthRequest) DoGetUserInfo(authToken model.AuthToken) (string, error) {
 	url := baseAuthRequest.getUserInfoUrl(authToken)
 	resp, err := http.Get(url)
@@ -102,6 +130,10 @@ func (baseAuthRequest *BaseAuthRequest) getUserInfoUrl(authToken model.AuthToken
 }
 
 func (baseAuthRequest *BaseAuthRequest) getAuthorizeUrl(state string) string {
+	if state == "" {
+		state = uuid.New().String()
+	}
+	baseAuthRequest.StateCache.Cache(state, state)
 	return fmt.Sprintf("%s?response_type=code&client_id=%s&redirect_uri=%s&state=%s",
 		baseAuthRequest.PlatformUrl.AuthorizeUrl, baseAuthRequest.AuthConfig.ClientId, baseAuthRequest.AuthConfig.RedirectUri, state)
 }
