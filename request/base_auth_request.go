@@ -49,22 +49,6 @@ func (baseAuthRequest *BaseAuthRequest) Login(request AuthRequest, authCallBack 
 	}, nil
 }
 
-func (baseAuthRequest *BaseAuthRequest) Revoke(authToken model.AuthToken) model.AuthResponse {
-	return model.AuthResponse{}
-}
-
-func (baseAuthRequest *BaseAuthRequest) Refresh(authToken model.AuthToken) model.AuthResponse {
-	return model.AuthResponse{}
-}
-
-func (baseAuthRequest *BaseAuthRequest) getAccessToken(authCallback model.AuthCallback) (model.AuthToken, error) {
-	return model.AuthToken{}, nil
-}
-
-func (baseAuthRequest *BaseAuthRequest) getUserInfo(authToken model.AuthToken) model.AuthUser {
-	return model.AuthUser{}
-}
-
 func (baseAuthRequest *BaseAuthRequest) DoPostAuthorizationCode(code string) (string, error) {
 	resp, err := http.Post(baseAuthRequest.getAccessTokenUrl(code), "application/json", nil)
 	if err != nil {
@@ -119,6 +103,34 @@ func (baseAuthRequest *BaseAuthRequest) DoGetUserInfo(authToken model.AuthToken)
 	return string(body), nil
 }
 
+func (baseAuthRequest *BaseAuthRequest) DoPostRevoke(authToken model.AuthToken) (string, error) {
+	url := baseAuthRequest.getRevokeUrl(authToken)
+	resp, err := http.Post(url, "application/json", nil)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
+}
+
+func (baseAuthRequest *BaseAuthRequest) DoGetRevoke(authToken model.AuthToken) (string, error) {
+	url := baseAuthRequest.getRevokeUrl(authToken)
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
+}
+
 func (baseAuthRequest *BaseAuthRequest) getAccessTokenUrl(code string) string {
 	return fmt.Sprintf("%s?code=%s&client_id=%s&client_secret=%s&grant_type=authorization_code&redirect_uri=%s",
 		baseAuthRequest.PlatformUrl.AccessTokenUrl, code, baseAuthRequest.AuthConfig.ClientId, baseAuthRequest.AuthConfig.ClientSecret, baseAuthRequest.AuthConfig.RedirectUri)
@@ -136,6 +148,11 @@ func (baseAuthRequest *BaseAuthRequest) getAuthorizeUrl(state string) string {
 	baseAuthRequest.StateCache.Cache(state, state)
 	return fmt.Sprintf("%s?response_type=code&client_id=%s&redirect_uri=%s&state=%s",
 		baseAuthRequest.PlatformUrl.AuthorizeUrl, baseAuthRequest.AuthConfig.ClientId, baseAuthRequest.AuthConfig.RedirectUri, state)
+}
+
+func (baseAuthRequest *BaseAuthRequest) getRevokeUrl(authToken model.AuthToken) string {
+	return fmt.Sprintf("%s?access_token=%s",
+		baseAuthRequest.PlatformUrl.RevokeUrl, authToken.AccessToken)
 }
 
 func (baseAuthRequest *BaseAuthRequest) getScopes(separator string, isEncode bool, defaultScopes []string) string {

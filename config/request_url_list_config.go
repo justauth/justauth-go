@@ -19,6 +19,7 @@ type PlatformUrl struct {
 	AccessTokenUrl string `yaml:"AccessTokenUrl"`
 	UserInfoUrl    string `yaml:"UserInfoUrl"`
 	RefreshUrl     string `yaml:"RefreshUrl"`
+	RevokeUrl      string `yaml:"RevokeUrl"`
 }
 
 type PlatformStr string

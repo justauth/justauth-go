@@ -55,6 +55,10 @@ func NewAuthGiteeRequest(authConfig model.AuthConfig, authStateCache ...cache.Au
 	}, nil
 }
 
+func NewAuthGiteeRequest1(authConfig model.AuthConfig) {
+	NewAuthGiteeRequest(authConfig, []cache.AuthStateCache{cache.NewAuthDefaultStateCache()}...)
+}
+
 func (giteeRequest *AuthGiteeRequest) Authorize(state string) string {
 	authorizeUrl := giteeRequest.baseAuthRequest.getAuthorizeUrl(state)
 	scopes := giteeRequest.baseAuthRequest.getScopes(" ", true, defaultScope)
