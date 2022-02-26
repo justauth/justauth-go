@@ -28,7 +28,7 @@ func CheckState(state string, platform config.PlatformUrl, stateCache cache.Auth
 	if platform.Platform == string(config.PlatformStrTwitter) {
 		return true
 	}
-	if state == "" || stateCache.ContainsKey(state) {
+	if state == "" || !stateCache.ContainsKey(state) {
 		return false
 	}
 	return true

@@ -8,6 +8,7 @@ import (
 	"github.com/justauth/justauth-go/error"
 	"github.com/justauth/justauth-go/model"
 	"github.com/tidwall/gjson"
+	"net/http"
 )
 
 type AuthGiteeRequest struct {
@@ -33,11 +34,7 @@ const (
 
 var defaultScope = []string{GiteeScopeUserInfo}
 
-func NewAuthGiteeRequest(authConfig model.AuthConfig, authStateCache ...cache.AuthStateCache) (*AuthGiteeRequest, error) {
-	stateCache := authStateCache[0]
-	if stateCache == nil {
-		stateCache = cache.NewAuthDefaultStateCache()
-	}
+func NewAuthGiteeRequest(authConfig model.AuthConfig, authStateCache cache.AuthStateCache) (*AuthGiteeRequest, error) {
 	err := config.InitConfig()
 	if err != nil {
 		return nil, err
@@ -50,13 +47,15 @@ func NewAuthGiteeRequest(authConfig model.AuthConfig, authStateCache ...cache.Au
 		baseAuthRequest: BaseAuthRequest{
 			AuthConfig:  authConfig,
 			PlatformUrl: platformUrl,
-			StateCache:  stateCache,
+			StateCache:  authStateCache,
+			HttpClient:  http.DefaultClient,
 		},
+		authConfig: authConfig,
 	}, nil
 }
 
-func NewAuthGiteeRequest1(authConfig model.AuthConfig) {
-	NewAuthGiteeRequest(authConfig, []cache.AuthStateCache{cache.NewAuthDefaultStateCache()}...)
+func NewAuthGiteeRequestDefaultStateCache(authConfig model.AuthConfig) (*AuthGiteeRequest, error) {
+	return NewAuthGiteeRequest(authConfig, cache.NewAuthDefaultStateCache())
 }
 
 func (giteeRequest *AuthGiteeRequest) Authorize(state string) string {
@@ -82,7 +81,7 @@ func (giteeRequest *AuthGiteeRequest) Refresh(authToken model.AuthToken) model.A
 }
 
 func (giteeRequest *AuthGiteeRequest) getAccessToken(authCallback model.AuthCallback) (model.AuthToken, error) {
-	response, err := giteeRequest.baseAuthRequest.DoPostAuthorizationCode(authCallback.Code)
+	response, err := giteeRequest.baseAuthRequest.AcquireAuthorizationCode(http.MethodPost, authCallback.Code)
 	if err != nil {
 		return model.AuthToken{}, err
 	}
@@ -102,7 +101,7 @@ func (giteeRequest *AuthGiteeRequest) getAccessToken(authCallback model.AuthCall
 }
 
 func (giteeRequest *AuthGiteeRequest) getUserInfo(authToken model.AuthToken) (model.AuthUser, error) {
-	response, err := giteeRequest.baseAuthRequest.DoGetUserInfo(authToken)
+	response, err := giteeRequest.baseAuthRequest.AcquireUserInfo(http.MethodGet, authToken)
 	if err != nil {
 		return model.AuthUser{}, err
 	}

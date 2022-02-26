@@ -45,6 +45,7 @@ type AuthConfig struct {
 	Pkce                   bool     `json:"pkce"`
 	AuthServerId           string   `json:"auth_server_id"`
 	IgnoreCheckRedirectUri bool     `json:"ignore_check_redirect_uri"`
+	Proxy                  string   `json:"proxy"`
 }
 
 type AuthUser struct {

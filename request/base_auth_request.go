@@ -8,7 +8,6 @@ import (
 	"github.com/justauth/justauth-go/error"
 	"github.com/justauth/justauth-go/model"
 	"github.com/justauth/justauth-go/utils"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
@@ -18,6 +17,7 @@ type BaseAuthRequest struct {
 	AuthConfig  model.AuthConfig
 	PlatformUrl config.PlatformUrl
 	StateCache  cache.AuthStateCache
+	HttpClient  *http.Client
 }
 
 func (baseAuthRequest *BaseAuthRequest) Login(request AuthRequest, authCallBack model.AuthCallback) (model.AuthResponse, error) {
@@ -49,86 +49,40 @@ func (baseAuthRequest *BaseAuthRequest) Login(request AuthRequest, authCallBack 
 	}, nil
 }
 
-func (baseAuthRequest *BaseAuthRequest) DoPostAuthorizationCode(code string) (string, error) {
-	resp, err := http.Post(baseAuthRequest.getAccessTokenUrl(code), "application/json", nil)
+func (baseAuthRequest *BaseAuthRequest) AcquireAuthorizationCode(httpMethod, code string) (string, error) {
+	response, err := utils.HttpRequest(utils.HttpRequestData{
+		Method: httpMethod,
+		ReqUrl: baseAuthRequest.getAccessTokenUrl(code),
+		Client: baseAuthRequest.HttpClient,
+	})
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	return string(body), nil
+	return response, nil
 }
 
-func (baseAuthRequest *BaseAuthRequest) DoGetAuthorizationCode(code string) (string, error) {
-	resp, err := http.Get(baseAuthRequest.getAccessTokenUrl(code))
+func (baseAuthRequest *BaseAuthRequest) AcquireUserInfo(httpMethod string, authToken model.AuthToken) (string, error) {
+	response, err := utils.HttpRequest(utils.HttpRequestData{
+		Method: httpMethod,
+		ReqUrl: baseAuthRequest.getUserInfoUrl(authToken),
+		Client: baseAuthRequest.HttpClient,
+	})
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	return string(body), nil
+	return response, nil
 }
 
-func (baseAuthRequest *BaseAuthRequest) DoPostUserInfo(authToken model.AuthToken) (string, error) {
-	url := baseAuthRequest.getUserInfoUrl(authToken)
-	resp, err := http.Post(url, "application/json", nil)
+func (baseAuthRequest *BaseAuthRequest) AcquireRevoke(httpMethod string, authToken model.AuthToken) (string, error) {
+	response, err := utils.HttpRequest(utils.HttpRequestData{
+		Method: httpMethod,
+		ReqUrl: baseAuthRequest.getRevokeUrl(authToken),
+		Client: baseAuthRequest.HttpClient,
+	})
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	return string(body), nil
-}
-
-func (baseAuthRequest *BaseAuthRequest) DoGetUserInfo(authToken model.AuthToken) (string, error) {
-	url := baseAuthRequest.getUserInfoUrl(authToken)
-	resp, err := http.Get(url)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	return string(body), nil
-}
-
-func (baseAuthRequest *BaseAuthRequest) DoPostRevoke(authToken model.AuthToken) (string, error) {
-	url := baseAuthRequest.getRevokeUrl(authToken)
-	resp, err := http.Post(url, "application/json", nil)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	return string(body), nil
-}
-
-func (baseAuthRequest *BaseAuthRequest) DoGetRevoke(authToken model.AuthToken) (string, error) {
-	url := baseAuthRequest.getRevokeUrl(authToken)
-	resp, err := http.Get(url)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	return string(body), nil
+	return response, nil
 }
 
 func (baseAuthRequest *BaseAuthRequest) getAccessTokenUrl(code string) string {

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -21,6 +22,12 @@ type HttpRequestData struct {
 }
 
 func HttpRequest(requestData HttpRequestData) (string, error) {
+	if requestData.Client == nil {
+		return "", errors.New("client is nil")
+	}
+	if requestData.Method == "" {
+		return "", errors.New("method is nil")
+	}
 	if requestData.Params != nil && len(requestData.Params) > 0 {
 		param := paramToString(requestData.Params, requestData.IsEncode)
 		unescape, err := url.QueryUnescape(fmt.Sprintf("%s%s%s", requestData.ReqUrl, "?", param))

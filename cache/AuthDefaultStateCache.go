@@ -20,10 +20,11 @@ func NewAuthDefaultStateCache() *AuthDefaultStateCache {
 	defaultStateCache := &AuthDefaultStateCache{}
 	ticker := time.NewTicker(timeout)
 	defer ticker.Stop()
-
-	for range ticker.C {
-		defaultStateCache.ClearExpiredCache()
-	}
+	go func() {
+		for range ticker.C {
+			defaultStateCache.ClearExpiredCache()
+		}
+	}()
 	return defaultStateCache
 }
 
