@@ -21,6 +21,7 @@ type HttpRequestData struct {
 	IsEncode bool              `json:"is_encode"`
 }
 
+// HttpRequest Customized http request, support Customized Headers、Data、Params and Proxy
 func HttpRequest(requestData HttpRequestData) (string, error) {
 	if requestData.Client == nil {
 		return "", errors.New("client is nil")

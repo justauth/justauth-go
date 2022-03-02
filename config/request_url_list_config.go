@@ -52,7 +52,7 @@ func InitConfig() error {
 	return nil
 }
 
-func GetRequestUrlListConfig() (s *RequestUrlListConfig) {
+func GetRequestUrlListConfig() *RequestUrlListConfig {
 	return &requestUrlListConfig
 }
 

@@ -5,5 +5,5 @@ type AuthStateCache interface {
 	CacheTimeOut(key, value string, ttl int64)
 	Get(key string) string
 	ContainsKey(key string) bool
-	ClearExpiredCache()
+	clearExpiredCache()
 }

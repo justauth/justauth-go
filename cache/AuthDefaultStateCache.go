@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+//AuthDefaultStateCache  default StateCache
 type AuthDefaultStateCache struct {
 	stateCache sync.Map
 }
@@ -22,7 +23,7 @@ func NewAuthDefaultStateCache() *AuthDefaultStateCache {
 	defer ticker.Stop()
 	go func() {
 		for range ticker.C {
-			defaultStateCache.ClearExpiredCache()
+			defaultStateCache.clearExpiredCache()
 		}
 	}()
 	return defaultStateCache
@@ -62,7 +63,7 @@ func (defaultStateCache *AuthDefaultStateCache) ContainsKey(key string) bool {
 	return true
 }
 
-func (defaultStateCache *AuthDefaultStateCache) ClearExpiredCache() {
+func (defaultStateCache *AuthDefaultStateCache) clearExpiredCache() {
 	defaultStateCache.stateCache.Range(func(key, value interface{}) bool {
 		if value.(*StateCache).isExpired() {
 			defaultStateCache.stateCache.Delete(key)
