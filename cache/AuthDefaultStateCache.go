@@ -19,9 +19,9 @@ type StateCache struct {
 
 func NewAuthDefaultStateCache() *AuthDefaultStateCache {
 	defaultStateCache := &AuthDefaultStateCache{}
-	ticker := time.NewTicker(timeout)
-	defer ticker.Stop()
 	go func() {
+		ticker := time.NewTicker(timeout)
+		defer ticker.Stop()
 		for range ticker.C {
 			defaultStateCache.clearExpiredCache()
 		}
@@ -47,12 +47,12 @@ func (defaultStateCache *AuthDefaultStateCache) CacheTimeOut(key, value string, 
 	})
 }
 
-func (defaultStateCache *AuthDefaultStateCache) Get(key string) string {
+func (defaultStateCache *AuthDefaultStateCache) Get(key string) *StateCache {
 	value, ok := defaultStateCache.stateCache.Load(key)
 	if !ok {
-		return ""
+		return nil
 	}
-	return value.(string)
+	return value.(*StateCache)
 }
 
 func (defaultStateCache *AuthDefaultStateCache) ContainsKey(key string) bool {
