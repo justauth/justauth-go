@@ -1,0 +1,23 @@
+RequestUrlList:
+  - Platform: gitee
+    AuthorizeUrl: https://gitee.com/oauth/authorize
+    AccessTokenUrl: https://gitee.com/oauth/token
+    UserInfoUrl: https://gitee.com/api/v5/user
+  - Platform: wechat_mp
+    AuthorizeUrl: https://open.weixin.qq.com/connect/oauth2/authorize
+    AccessTokenUrl: https://api.weixin.qq.com/sns/oauth2/access_token
+    UserInfoUrl: https://api.weixin.qq.com/sns/userinfo
+    RefreshUrl: https://api.weixin.qq.com/sns/oauth2/refresh_token
+  - Platform: twitter
+    AuthorizeUrl: https://api.twitter.com/oauth/authenticate
+    AccessTokenUrl: https://api.twitter.com/oauth/access_token
+    UserInfoUrl: https://api.twitter.com/1.1/account/verify_credentials.json
+  - Platform: alipay
+    AuthorizeUrl: https://openauth.alipay.com/oauth2/publicAppAuthorize.htm
+    AccessTokenUrl: https://openapi.alipay.com/gateway.do
+    UserInfoUrl: https://openapi.alipay.com/gateway.do
+  - Platform: huawei
+    AuthorizeUrl: https://oauth-login.cloud.huawei.com/oauth2/v2/authorize
+    AccessTokenUrl: https://oauth-login.cloud.huawei.com/oauth2/v2/token
+    UserInfoUrl: https://api.vmall.com/rest.php
+    RefreshUrl: https://oauth-login.cloud.huawei.com/oauth2/v2/token
